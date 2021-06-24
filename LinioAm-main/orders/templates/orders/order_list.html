@@ -1,0 +1,55 @@
+{% extends 'base.html' %} {% block title %}Your Orders {% endblock title %}
+{% block content %}
+<h1 class="font-weight-light mt-3">Tus órdenes</h1>
+<hr />
+<ul class="list-group my-3">
+  {% for order in orders %}
+  <li class="list-group-item">
+    <h5 class="mb-2">
+      {% if order.status == 'Entregado' %}
+      <span class="badge badge-success font-weight-light">
+        {{order.status}}
+      </span>
+      {% else %}
+      <span class="badge badge-info font-weight-light">{{order.status}}</span>
+      {% endif %}
+    </h5>
+    <h3>
+      <a href="{% url 'orders:details' order.id %}">Orden Nro - {{order.id}}</a>
+    </h3>
+    <h5>S/. {{order.total_price}}</h5>
+    <p class="mb-0">{{order.total_items}} Items</p>
+    <p class="mb-0">
+      Dirección de envío - {{order.direccion}}, {{order.provincia}}, {{order.distrito}}
+    </p>
+    <p class="mb-0">Pedido hace {{order.created|timesince}}</p>
+  </li>
+  {% empty %}
+  <li class="list-group-item text-center border-white">
+    <h3 class="font-weight-light">No has hecho ningún pedido.</h3>
+    <a href="{% url 'store:product_list' %}" class="btn btn-secondary">
+      Continuar comprando
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% with page_obj as page %}
+<p>Página <b>{{page.number}}</b> de <b>{{page.paginator.num_pages}}</b></p>
+<nav>
+  <ul class="pagination">
+    {% if page.has_previous %}
+    <li class="page-item">
+      <a href="?page={{page.previous_page_number}}" class="page-link">
+        Anterior
+      </a>
+    </li>
+    {% endif %}
+    <li class="page-item active"><a href="#" class="page-link">1</a></li>
+    {% if page.has_next %}
+    <li class="page-item">
+      <a href="?page={{page.next_page_number}}" class="page-link">Siguiente</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endwith %} {% endblock content %}
